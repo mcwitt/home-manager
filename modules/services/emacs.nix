@@ -97,13 +97,13 @@ in {
         };
 
         Service = {
-          ExecStart = "${emacsBinPath}/emacs --fg-daemon${
+          ExecStart = "${pkgs.runtimeShell} -l -c 'exec ${emacsBinPath}/emacs --fg-daemon${
             # In case the user sets 'server-directory' or 'server-name' in
             # their Emacs config, we want to specify the socket path explicitly
             # so launching 'emacs.service' manually doesn't break emacsclient
             # when using socket activation.
               optionalString cfg.socketActivation.enable ''="${socketPath}"''
-            }";
+            }'";
           # We use '(kill-emacs 0)' to avoid exiting with a failure code, which
           # would restart the service immediately.
           ExecStop = "${emacsBinPath}/emacsclient --eval '(kill-emacs 0)'";
